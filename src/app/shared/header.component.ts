@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import {Component, OnDestroy} from "@angular/core";
 import {AuthService} from "./auth.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'my-header',
@@ -16,7 +17,7 @@ import {AuthService} from "./auth.service";
                         <li><a [routerLink]="['protected']">Protected</a></li>
         
                     </ul>
-                    <ul class="nav navbar-nav navbar-right" *ngIf="isAuthenticated()">
+                    <ul class="nav navbar-nav navbar-right" *ngIf="isAuthenticated">
         
                         <li><a (click)="onLogout()" style="cursor: pointer;">Logout</a></li>
                     </ul>
@@ -27,12 +28,23 @@ import {AuthService} from "./auth.service";
         </header>
     `
 })
-export class HeaderComponent {
-  constructor(private authService: AuthService) {}
+export class HeaderComponent implements OnDestroy {
+  isAuthenticated = false;
+  private subscription: Subscription;
 
-  isAuthenticated() {
-    return this.authService.isAuthenticated();
+  constructor(private authService: AuthService) {
+    this.authService.isAuthenticated().subscribe(
+      authStatus => this.isAuthenticated = authStatus
+    );
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  // isAuthenticated() {
+  //   return this.isAuthenticated;
+  // }
 
   onLogout() {
     this.authService.logout();

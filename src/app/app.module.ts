@@ -10,6 +10,7 @@ import { SignupComponent } from "./unprotected/signup.component";
 import { ProtectedComponent } from "./protected/protected.component";
 import {routes} from "./app.routes";
 import {AuthService} from "./shared/auth.service";
+import {AuthGuard} from "./shared/auth.guard";
 
 
 @NgModule({
@@ -27,6 +28,6 @@ import {AuthService} from "./shared/auth.service";
       routes
     ],
     bootstrap: [AppComponent],
-    providers: [AuthService]
+    providers: [AuthService, AuthGuard]
 })
 export class AppModule {}
